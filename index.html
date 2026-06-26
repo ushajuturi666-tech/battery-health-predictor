@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Battery Health Predictor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>AI-Based Battery Health Predictor</h1>
+  <button class="btn" onclick="checkBattery()">Check Battery Info</button>
+  <canvas id="healthChart"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    async function checkBattery() {
+      const res = await fetch("/battery");
+      const data = await res.json();
+      if(data.error) {
+        alert(data.error);
+      } else {
+        alert(`Battery: ${data.percent}% | Health: ${data.health}% | Plugged: ${data.plugged}`);
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Health'],
+            datasets: [{ label: 'Battery Health', data: [data.health], backgroundColor: 'green' }]
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
